@@ -1,0 +1,2 @@
+class Trump:
+    pass
