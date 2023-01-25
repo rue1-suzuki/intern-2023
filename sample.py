@@ -1,12 +1,27 @@
 from random import shuffle
 
+SUITS = ['スペード', 'クラブ', 'ダイヤ', 'ハート',]
 
-def CALC_TOTAL(cards):
-    pass
+
+def calc_total(cards):
+    total = 0
+    for card in cards:
+        if card['number'] == 1:
+            total += 11
+        elif card['number'] > 10:
+            total += 10
+        else:
+            total += card['number']
+    for card in cards:
+        if not total > 21:
+            break
+        if card['number'] == 1:
+            total += -10
+    return total
 
 
 def main():
-    Trump = [
+    trump = [
         {'suit': 'スペード', 'number': 1, },
         {'suit': 'スペード', 'number': 2, },
         {'suit': 'スペード', 'number': 3, },
@@ -60,21 +75,21 @@ def main():
         {'suit': 'ハート', 'number': 12, },
         {'suit': 'ハート', 'number': 13, },
     ]
-    shuffle(Trump)
+    shuffle(trump)
 
     dealers = []
-    dealers.append(Trump.pop())
-    dealers.append(Trump.pop())
+    dealers.append(trump.pop())
+    dealers.append(trump.pop())
 
     players = []
-    players.append(Trump.pop())
-    players.append(Trump.pop())
+    players.append(trump.pop())
+    players.append(trump.pop())
 
     print('ディーラーのアップカード')
     print('{} {}'.format(dealers[0]['suit'], dealers[0]['number'],))
     print('')
 
-    while Trump.__len__() > 0:
+    while trump.__len__() > 0:
         print('プレイヤーのカード')
         for card in players:
             print('{} {}'.format(card['suit'], card['number'],))
@@ -83,43 +98,43 @@ def main():
         yes_or_no = input('ヒットしますか？(y/n): ')
         if yes_or_no == 'y':
             print('ヒット\n')
-            players.append(Trump.pop())
+            players.append(trump.pop())
         elif yes_or_no == 'n':
             print('スタンド\n')
             break
         else:
             continue
 
-        if CALC_TOTAL(players) > 21:
+        if calc_total(players) > 21:
             print('バースト\n')
             print('プレイヤーの敗北')
             exit()
 
-    while Trump.__len__() > 0:
+    while trump.__len__() > 0:
         print('ディーラーのカード')
         for card in dealers:
             print('{} {}'.format(card['suit'], card['number'],))
         print('')
 
-        if CALC_TOTAL(dealers) >= 17:
+        if calc_total(dealers) >= 17:
             print('スタンド\n')
             break
         else:
             print('ヒット\n')
-            dealers.append(Trump.pop())
+            dealers.append(trump.pop())
 
-        if CALC_TOTAL(dealers) > 21:
+        if calc_total(dealers) > 21:
             print('バースト\n')
             print('ディーラーの敗北')
             exit()
 
-    print('ディーラー: {}'.format(CALC_TOTAL(dealers)))
-    print('プレイヤー: {}'.format(CALC_TOTAL(players)))
+    print('ディーラー: {}'.format(calc_total(dealers)))
+    print('プレイヤー: {}'.format(calc_total(players)))
     print('')
 
-    if CALC_TOTAL(players) > CALC_TOTAL(dealers):
+    if calc_total(players) > calc_total(dealers):
         print('プレイヤーの勝利')
-    elif CALC_TOTAL(dealers) > CALC_TOTAL(players):
+    elif calc_total(dealers) > calc_total(players):
         print('プレイヤーの敗北')
     else:
         print('引き分け')
