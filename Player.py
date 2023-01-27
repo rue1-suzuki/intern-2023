@@ -16,10 +16,10 @@ class Player:
         self.credit = credit
 
     def print_upcard(self) -> None:
-        print(f'{self.name} の アップカード: {self.cards[0]}')
+        print(f'アップカード: {self.cards[0]}')
 
     def print_credit(self) -> None:
-        print(f'{self.name} の クレジット: {self.credit}')
+        print(f'クレジット: {self.credit}')
 
     def add_credit(self, added_credit: int) -> None:
         self.credit += added_credit

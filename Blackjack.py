@@ -1,4 +1,3 @@
-from random import shuffle
 from typing import List
 
 from Player import Player
@@ -9,8 +8,8 @@ MAX_PLAYERS = 3
 BET_CREDIT = 100
 FIRST_CREDIT = BET_CREDIT * 2
 WIN_CREDIT = BET_CREDIT * 2
-LOSE_CREDIT = 0
-DRAW_CREDIT = BET_CREDIT
+LOSE_CREDIT = BET_CREDIT * 0
+DRAW_CREDIT = BET_CREDIT * 1
 
 
 class Blackjack:
@@ -33,22 +32,27 @@ class Blackjack:
             break
         print('')
 
-        self.dealer = Player(name='ディーラー', is_dealer=True, )
+        self.dealer = Player(
+            name='ディーラー',
+            is_dealer=True,
+        )
         self.players = [
-            Player(name=f'プレイヤー{index + 1}', credit=FIRST_CREDIT,)
+            Player(
+                name=f'プレイヤー{index + 1}',
+                credit=FIRST_CREDIT,
+            )
             for index in range(player_of_number)
         ]
 
     def games(self) -> None:
         while self.players.__len__() > 1:
-            print(f'残り {self.players.__len__()} 名')
             self.game()
             new_players = []
             for member in self.players:
                 if member.is_active():
                     new_players.append(member)
                 else:
-                    print(f'{member.name} が 脱落')
+                    print(f'脱落: {member.name}')
             print('')
             self.players = new_players
 
@@ -63,15 +67,22 @@ class Blackjack:
         self._result()
 
     def _game_init(self) -> None:
-        shuffle(self.players)
         self.trump = Trump()
 
         for member in self.players + [self.dealer]:
-            member.cards = [self.trump.pick_card() for _ in range(2)]
-            member.add_credit(-BET_CREDIT)
+            print(member.name)
+            member.cards = [
+                self.trump.pick_card()
+                for _ in range(2)
+            ]
             member.print_upcard()
+
             if not member.is_dealer:
                 member.print_credit()
+                member.add_credit(-BET_CREDIT)
+                print(f'↓ -{BET_CREDIT}')
+                member.print_credit()
+
             print('')
         print('')
 
@@ -123,13 +134,13 @@ class Blackjack:
                 is_win = None
 
             if is_win is None:
-                print(f'{member.name}: 引き分け')
+                print(f'{member.name}: 引き分け (+{DRAW_CREDIT})')
                 member.add_credit(DRAW_CREDIT)
             elif is_win:
-                print(f'{member.name}: 勝ち')
+                print(f'{member.name}: 勝ち (+{WIN_CREDIT})')
                 member.add_credit(WIN_CREDIT)
             else:
-                print(f'{member.name}: 負け')
+                print(f'{member.name}: 負け (+{LOSE_CREDIT})')
                 member.add_credit(LOSE_CREDIT)
         print('')
 
