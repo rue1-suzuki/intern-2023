@@ -23,6 +23,8 @@ class Player:
 
     def add_credit(self, added_credit: int) -> None:
         self.credit += added_credit
+        if self.credit < 0:
+            self.credit = 0
 
     def print_cards(self) -> None:
         # print(f'{self.name} の カード')

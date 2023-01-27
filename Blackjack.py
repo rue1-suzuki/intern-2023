@@ -4,16 +4,38 @@ from typing import List
 from Player import Player
 from Trump import Trump
 
+MAX_PLAYERS = 3
+
+BET_CREDIT = 100
+FIRST_CREDIT = BET_CREDIT * 2
+WIN_CREDIT = BET_CREDIT * 2
+LOSE_CREDIT = 0
+DRAW_CREDIT = BET_CREDIT
+
 
 class Blackjack:
     trump: Trump
     dealer: Player
     players: List[Player]
 
-    def __init__(self, player_of_number: int) -> None:
+    def __init__(self) -> None:
+        while True:
+            try:
+                player_of_number = int(input(
+                    f'プレイヤーの人数を入力してください。(1～{MAX_PLAYERS}): '
+                ))
+            except ValueError:
+                continue
+
+            if player_of_number < 1 or MAX_PLAYERS < player_of_number:
+                print(f'1～{MAX_PLAYERS}で入力してください。')
+                continue
+            break
+        print('')
+
         self.dealer = Player(name='ディーラー', is_dealer=True, )
         self.players = [
-            Player(name=f'プレイヤー{index + 1}', credit=200,)
+            Player(name=f'プレイヤー{index + 1}', credit=FIRST_CREDIT,)
             for index in range(player_of_number)
         ]
 
@@ -27,6 +49,7 @@ class Blackjack:
                     new_players.append(member)
                 else:
                     print(f'{member.name} が 脱落')
+            print('')
             self.players = new_players
 
         if self.players.__len__() == 1:
@@ -45,7 +68,7 @@ class Blackjack:
 
         for member in self.players + [self.dealer]:
             member.cards = [self.trump.pick_card() for _ in range(2)]
-            member.add_credit(-100)
+            member.add_credit(-BET_CREDIT)
             member.print_upcard()
             if not member.is_dealer:
                 member.print_credit()
@@ -55,20 +78,23 @@ class Blackjack:
     def _burst_or_hit_or_stand(self) -> None:
         for member in self.players + [self.dealer]:
             print(f'{member.name} の ターン')
+
+            # プレイヤーが全員バーストしている場合、ディーラーは何もしない
+            if member.is_dealer:
+                not_break_players = list(filter(
+                    lambda x: not x.calc_total() > 21,
+                    self.players,
+                ))
+                if not_break_players.__len__() == 0:
+                    print('プレイヤーが全員バースト \n')
+                    break
+
             while self.trump.cards.__len__() > 0:
                 member.print_cards()
 
                 if member.calc_total() > 21:
                     print('バースト\n')
                     break
-
-                if member.is_dealer:
-                    not_break_players = list(filter(
-                        lambda x: not x.calc_total() > 21,
-                        self.players,
-                    ))
-                    if not_break_players.__len__() == 0:
-                        break
 
                 if member.is_hit():
                     print('ヒット\n')
@@ -86,10 +112,8 @@ class Blackjack:
         for member in self.players:
             member_total = member.calc_total()
             if member_total > 21:
-                # print(f'{member.name} が バースト')
                 is_win = False
             elif dealer_total > 21:
-                # print(f'{self.dealer.name} が バースト')
                 is_win = True
             elif member_total < dealer_total:
                 is_win = False
@@ -100,15 +124,22 @@ class Blackjack:
 
             if is_win is None:
                 print(f'{member.name}: 引き分け')
-                member.add_credit(100)
+                member.add_credit(DRAW_CREDIT)
             elif is_win:
-                print(f'{member.name}: 勝利')
-                member.add_credit(200)
+                print(f'{member.name}: 勝ち')
+                member.add_credit(WIN_CREDIT)
             else:
-                print(f'{member.name}: 敗北')
+                print(f'{member.name}: 負け')
+                member.add_credit(LOSE_CREDIT)
         print('')
 
 
 if __name__ == '__main__':
-    blackjack = Blackjack(player_of_number=3)
-    blackjack.games()
+    blackjack = Blackjack()
+    if blackjack.players.__len__() > 1:
+        blackjack.games()
+    else:
+        while True:
+            blackjack.game()
+            if input('次のゲームを始めますか？(y/n): ') == 'n':
+                break
