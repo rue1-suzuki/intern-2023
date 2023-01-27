@@ -9,11 +9,11 @@ class Trump:
 
     def __init__(self) -> None:
         cards = []
-        for suit in range(SUITS.__len__()):
-            for number in range(1, 1 + 13):
+        for suit_index in range(SUITS.__len__()):
+            for number_index in range(13):
                 card = Card(
-                    suit=suit,
-                    number=number,
+                    suit=suit_index,
+                    number=number_index + 1,
                 )
                 cards.append(card)
         shuffle(cards)

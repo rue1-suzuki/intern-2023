@@ -1,7 +1,5 @@
 from random import shuffle
 
-SUITS = ['スペード', 'クラブ', 'ダイヤ', 'ハート',]
-
 
 def calc_total(cards):
     total = 0

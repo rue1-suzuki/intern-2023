@@ -7,22 +7,25 @@ class Player:
     name: str
     cards: List[Card]
     is_dealer: bool
+    credit: int
 
-    def __init__(self, name: str, is_dealer: bool = False, ) -> None:
+    def __init__(self, name: str, is_dealer: bool = False, credit: int = 0) -> None:
         self.name = name
         self.cards = []
         self.is_dealer = is_dealer
-
-    def add_card(self, card: Card) -> None:
-        self.cards.append(card)
+        self.credit = credit
 
     def print_upcard(self) -> None:
-        print('{} の アップカード'.format(self.name))
-        print(self.cards[0])
-        print('')
+        print(f'{self.name} の アップカード: {self.cards[0]}')
+
+    def print_credit(self) -> None:
+        print(f'{self.name} の クレジット: {self.credit}')
+
+    def add_credit(self, added_credit: int) -> None:
+        self.credit += added_credit
 
     def print_cards(self) -> None:
-        print('{} の カード'.format(self.name))
+        # print(f'{self.name} の カード')
         for card in self.cards:
             print(card)
         print('')
@@ -48,7 +51,7 @@ class Player:
             return self.calc_total() < 17
 
         while True:
-            yes_or_no = input('{}: ヒットしますか？(y/n): '.format(self.name))
+            yes_or_no = input(f'{self.name}: ヒットしますか？(y/n): ')
             if yes_or_no == 'y':
                 return True
             elif yes_or_no == 'n':
@@ -56,3 +59,6 @@ class Player:
             else:
                 print('yまたはnを入力してください。\n')
                 continue
+
+    def is_active(self) -> bool:
+        return self.credit > 0

@@ -1,5 +1,12 @@
 SUITS = ['スペード', 'クラブ', 'ダイヤ', 'ハート', ]
 
+PICTURE_CARDS = [
+    {'number': 1, 'picture': 'A', },
+    {'number': 11, 'picture': 'J', },
+    {'number': 12, 'picture': 'Q', },
+    {'number': 13, 'picture': 'K', },
+]
+
 
 class Card:
     suit: int
@@ -9,14 +16,10 @@ class Card:
         self.suit = suit
         self.number = number
 
-    def __str__(self):
-        if self.number == 1:
-            return '{} {}'.format(SUITS[self.suit], 'A', )
-        elif self.number == 11:
-            return '{} {}'.format(SUITS[self.suit], 'J', )
-        elif self.number == 12:
-            return '{} {}'.format(SUITS[self.suit], 'Q', )
-        elif self.number == 13:
-            return '{} {}'.format(SUITS[self.suit], 'K', )
+    def __str__(self) -> str:
+        for picture_card in PICTURE_CARDS:
+            if self.number == picture_card['number']:
+                picture = picture_card['picture']
+                return f'{SUITS[self.suit]} {picture}'
 
-        return '{} {}'.format(SUITS[self.suit], self.number, )
+        return f'{SUITS[self.suit]} {self.number}'
